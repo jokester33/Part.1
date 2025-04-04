@@ -8,4 +8,19 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Remove="gretting.wav" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="gretting.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Speech" Version="9.0.3" />
+    <PackageReference Include="System.Windows.Extensions" Version="9.0.3" />
+  </ItemGroup>
+
 </Project>
