@@ -1,0 +1,109 @@
+﻿using System;
+using System.Threading;
+using System.Media;
+using System.IO;
+
+class CyberSecurityChatbot
+{
+
+
+    static void SimulateTyping(string message)
+    {
+        foreach (char c in message)
+        {
+            Console.Write(c);
+            Thread.Sleep(50);
+        }
+        Console.WriteLine();
+    }
+
+    static void PrintASCIIArt()
+    {
+        string asciiArt = @"
+ ____              _                      _      _            
+/ ___|_ __ __ _ _ _| |__ _ __ _ _ __ _ _ _| |_ __| |_ ___ _ _ 
+| |  _| '_ / _` | '_| '_ \ '_ \ '_/ _` |  _/ _|  _/ _ \ '_|
+| |_| | | | (_| | | | | | | | | (_| | | \__|\__|  __/ |  
+ \____|_|  \__,_|_| |_| |_| |_|\__,_|_| |_|   \___|\___|_|   
+                                                              
+        ";
+        Console.ForegroundColor = ConsoleColor.Cyan;
+        Console.WriteLine(asciiArt);
+        Console.ResetColor();
+    }
+
+
+
+    static string GetUserName()
+    {
+        SimulateTyping("What is your name?");
+        string name = Console.ReadLine();
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            name = "Guest";
+        }
+        return name;
+    }
+    static string GetResponse(string input)
+    {
+        input = input.ToLower();
+
+        if (input.Contains("hello") || input.Contains("hi") || input.Contains("hey") || input.Contains("greetings"))
+        {
+            return "Hello there! How can I assist you with cybersecurity today";
+        }
+        else if (input.Contains("purpose") || input.Contains("what do you do?") || input.Contains("why are you here"))
+        {
+            return "I'm here to help you stay safe online by providing valuable cybersecurity tips and answering your questions.";
+        }
+        else if (input.Contains("password") && input.Contains("safety"))
+        {
+            return "Always use strong, unique passwords for each account. A good password should contain a mix of letters, numbers, and symbols.";
+        }
+        else if (input.Contains("phishin"))
+        {
+            return "Phishing is when attackers try to trick you into giving out sensitive information. Be cautious of unsolicited emails or links.";
+        }
+        
+        {
+            return "I didn't quite understand that. Could you please rephrase? I'm here to answer your cybersecurity questions.";
+        }
+    }
+
+
+
+    static void Main(string[] args)
+    {
+        Console.Clear();
+
+        PrintASCIIArt();
+
+
+
+        string userName = GetUserName();
+        Console.Clear();
+
+        SimulateTyping($"Hello, {userName}! Welcome to the Cybersecurity Awareness Bot.");
+        Console.WriteLine("Feel free to ask me anything related to cybersecurity.");
+
+        bool exitChat = false;
+        while (!exitChat)
+        {
+
+            SimulateTyping("How can I help you today?");
+            string userInput = Console.ReadLine().ToLower();
+
+            if (userInput.Contains("exit") || userInput.Contains("quit") || userInput.Contains("bye"))
+            {
+                exitChat = true;
+                SimulateTyping("Goodbye! Stay safe online!");
+            }
+            else
+            {
+                string response = GetResponse(userInput);
+                SimulateTyping(response);
+            }
+        }
+
+    }
+}
