@@ -16,11 +16,12 @@ class CyberSecurityChatbot
         }
         Console.WriteLine();
     }
-
+    
+    //Display an ASCIIArt logo for the chatbot
     static void PrintASCIIArt()
     {
         string asciiArt = @"
-                                                              
+
  
  ██████╗██╗   ██╗██████╗ ███████╗██████╗ ██████╗  ██████╗ ████████╗            
 ██╔════╝╚██╗ ██╔╝██╔══██╗██╔════╝██╔══██╗██╔══██╗██╔═══██╗╚══██╔══╝            
@@ -29,11 +30,13 @@ class CyberSecurityChatbot
 ╚██████╗   ██║   ██████╔╝███████╗██║  ██║██████╔╝╚██████╔╝   ██║               
  ╚═════╝   ╚═╝   ╚═════╝ ╚══════╝╚═╝  ╚═╝╚═════╝  ╚═════╝    ╚═╝                                                                                                                                                                                                                                                                                                             
         ";
-        Console.ForegroundColor = ConsoleColor.Cyan;
+
+        Console.ForegroundColor = ConsoleColor.DarkRed;
         Console.WriteLine(asciiArt);
         Console.ResetColor();
     }
-    static string GetUserName()
+    //Ask for the users name and  return it
+   static string GetUserName()
     {
         SimulateTyping("What is your name?");
         string name = Console.ReadLine();
@@ -43,15 +46,16 @@ class CyberSecurityChatbot
         }
         return name;
     }
+    //Get a response based on user input
     static string GetResponse(string input)
     {
         input = input.ToLower();
 
         if (input.Contains("hello") || input.Contains("hi") || input.Contains("hey") || input.Contains("greetings"))
         {
-            return "Hello there! How can I assist you with cybersecurity today";
+            return "Hello there! How can I assist you with cybersecurity today?";
         }
-        else if (input.Contains("purpose") || input.Contains("what do you do?") || input.Contains("why are you here"))
+        else if (input.Contains("purpose") || input.Contains("what do you do") || input.Contains("why are you here"))
         {
             return "I'm here to help you stay safe online by providing valuable cybersecurity tips and answering your questions.";
         }
@@ -59,7 +63,7 @@ class CyberSecurityChatbot
         {
             return "Always use strong, unique passwords for each account. A good password should contain a mix of letters, numbers, and symbols.";
         }
-        else if (input.Contains("phishin"))
+        else if (input.Contains("phishing"))
         {
             return "Phishing is when attackers try to trick you into giving out sensitive information. Be cautious of unsolicited emails or links.";
         }
@@ -90,7 +94,7 @@ class CyberSecurityChatbot
     }
 
 
-
+    //Main Chatbot logic
     static void Main(string[] args)
     {
         Console.Clear();
