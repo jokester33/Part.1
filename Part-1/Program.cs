@@ -64,7 +64,27 @@ class CyberSecurityChatbot
         {
             return "Phishing is when attackers try to trick you into giving out sensitive information. Be cautious of unsolicited emails or links.";
         }
-        
+        else if (input.Contains("safe browsing") || input.Contains("browsing security"))
+        {
+            return "Make sure to only visit websites that are 'https' secure. Avoid clicking on suspicious links.";
+        }
+        else if (input.Contains("password manager"))
+        {
+            return "A password manager securely stores and organizes your passwords, making it easier to use strong, unique passwords without forgetting them.";
+        }
+        else if (input.Contains("malware"))
+        {
+            return "Malware is malicious software designed to harm your system. Make sure your antivirus software is up-to-date and avoid downloading files from untrusted sources.";
+        }
+        else if (input.Contains("vpn"))
+        {
+            return "A VPN (Virtual Private Network) encrypts your internet connection and hides your IP address, enhancing your privacy while browsing.";
+        }
+        else if (input.Contains("what can i ask you") || input.Contains("what do you know"))
+        {
+            return "You can ask me about cybersecurity topics, such as password safety, phishing, malware, VPNs, safe browsing, and more!";
+        }
+        else
         {
             return "I didn't quite understand that. Could you please rephrase? I'm here to answer your cybersecurity questions.";
         }
