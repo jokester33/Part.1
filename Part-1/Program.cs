@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.IO;
 using System.Speech;
@@ -28,20 +29,7 @@ class CyberSecurityChatbot
             "Enable multi-factor authentication wherever possible."
         }}
     };
-    // Function to play greeting audio 
-    static void PlayGreetingAudio()
-    {
-        SoundPlayer player = new SoundPlayer("gretting.wav");
-        try
-        {
-            player.Load();
-            player.Play();
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine("Audio file could not be played: " + e.Message);
-        }
-    }
+
     // Part 2: map keywords → handler methods
     static readonly Dictionary<string, TopicHandler> handlers = new Dictionary<string, TopicHandler>()
     {
@@ -86,51 +74,120 @@ class CyberSecurityChatbot
         return stripped.Length > 0 && (double)digits / stripped.Length > 0.6;
     }
 
+    //// Part 1: play greeting audio
+    static void PlayGreetingAudio()
+    {
+        SoundPlayer player = new SoundPlayer("gretting.wav");
+        try
+        {
+            player.Load();
+            player.Play();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine("Audio file could not be played: " + e.Message);
+       }
+     }
 
-
-    // UI functionality (function to simulate typing effect)
+    // Part 1: typing effect
     static void SimulateTyping(string message)
     {
         foreach (char c in message)
         {
             Console.Write(c);
-            Thread.Sleep(30); //Typing effect pauses
+            Thread.Sleep(30);
         }
         Console.WriteLine();
     }
 
-    // Displaying an ASCIIArt logo for the chatbot
+    // Part 1: ASCII art logo
     static void PrintASCIIArt()
     {
         string asciiArt = @"
-
- 
  ██████╗██╗   ██╗██████╗ ███████╗██████╗ ██████╗  ██████╗ ████████╗            
 ██╔════╝╚██╗ ██╔╝██╔══██╗██╔════╝██╔══██╗██╔══██╗██╔═══██╗╚══██╔══╝            
 ██║      ╚████╔╝ ██████╔╝█████╗  ██████╔╝██████╔╝██║   ██║   ██║               
 ██║       ╚██╔╝  ██╔══██╗██╔══╝  ██╔══██╗██╔══██╗██║   ██║   ██║               
 ╚██████╗   ██║   ██████╔╝███████╗██║  ██║██████╔╝╚██████╔╝   ██║               
- ╚═════╝   ╚═╝   ╚═════╝ ╚══════╝╚═╝  ╚═╝╚═════╝  ╚═════╝    ╚═╝                                                                                                                                                                                                                                                                                                             
-        ";
-
+ ╚═════╝   ╚═╝   ╚═════╝ ╚══════╝╚═╝  ╚═╝╚═════╝  ╚═════╝    ╚═╝";
         Console.ForegroundColor = ConsoleColor.DarkRed;
         Console.WriteLine(asciiArt);
         Console.ResetColor();
     }
 
-    // Asking  for the user's name and return it
+    // Part 1: ask for and return user name
     static string GetUserName()
     {
         SimulateTyping("What is your name?");
         string name = Console.ReadLine();
-        if (string.IsNullOrWhiteSpace(name))
-        {
-            name = "Guest";
-        }
-        return name;
+        return string.IsNullOrWhiteSpace(name) ? "Guest" : name;
     }
 
-    // Giving out  a response based on user input
+    // Part 2: each handler sets currentTopic, maybe memory, and returns a random tip
+    static string HandlePhishing(string _)
+    {
+        currentTopic = "phishing";
+        return topicTips["phishing"][rnd.Next(topicTips["phishing"].Count)];
+    }
+
+    static string HandlePassword(string _)
+    {
+        currentTopic = "password";
+        return topicTips["password"][rnd.Next(topicTips["password"].Count)];
+    }
+
+    static string HandlePrivacy(string _)
+    {
+        currentTopic = "privacy";
+        if (string.IsNullOrEmpty(favoriteTopic))
+        {
+            favoriteTopic = "privacy";
+            SimulateTyping("Great! I'll remember that you're interested in privacy.");
+        }
+        return topicTips["privacy"][rnd.Next(topicTips["privacy"].Count)];
+    }
+
+    // Part 2: dynamic response layer
+    static string GetDynamicResponse(string input, string userName)
+    {
+        var lower = input.ToLower();
+
+        if (IsMostlyNumbers(lower))
+            return "I think you entered mostly numbers—could you rephrase that in a sentence?";
+
+        var sentiment = DetectSentiment(lower);
+        var prefix = GetSentimentPrefix(sentiment);
+
+        // Follow-up: "more"/"another"
+        if ((lower.Contains("more") || lower.Contains("another") || lower.Contains("again"))
+            && !string.IsNullOrEmpty(currentTopic)
+            && handlers.ContainsKey(currentTopic))
+        {
+            var tip = handlers[currentTopic](lower);
+            return prefix + tip;
+        }
+
+        // Keyword-based delegate dispatch
+        foreach (var kv in handlers)
+        {
+            if (lower.Contains(kv.Key))
+            {
+                var tip = kv.Value(lower);
+                return prefix + tip;
+            }
+        }
+
+        // Memory-recall
+        if (lower.Contains("remember") && !string.IsNullOrEmpty(favoriteTopic))
+        {
+            return $"Yes, {userName}, you mentioned you're interested in {favoriteTopic}.";
+        }
+
+        // Not handled here → signal to fallback
+        return null;
+    }
+
+    // Part 1: original fallback responses
     static string GetResponse(string input)
     {
         // Convering  User input to lower case
@@ -139,7 +196,7 @@ class CyberSecurityChatbot
         // Responses to varying user input
 
         //Phishing responses
-        if (input.Contains("phishing") || input.Contains("phising")) 
+        if (input.Contains("phishing") || input.Contains("phising"))
         {
             return "Phishing is when attackers try to trick you into giving out sensitive information. Be cautious of unsolicited emails or links.";
         }
@@ -199,11 +256,11 @@ class CyberSecurityChatbot
         }
     }
 
-    // Main Chatbot logic
 
+
+    // Main loop
     static void Main(string[] args)
     {
-        
         PlayGreetingAudio();
         PrintASCIIArt();
 
@@ -211,26 +268,29 @@ class CyberSecurityChatbot
         Console.Clear();
 
         SimulateTyping($"Hello, {userName}! Welcome to the Cybersecurity Awareness Bot.");
-        Console.WriteLine("Feel free to ask me anything related to cybersecurity.");
 
         bool exitChat = false;
         while (!exitChat)
         {
             SimulateTyping("How can I help you today?");
-            string userInput = Console.ReadLine().ToLower();
+            string userInput = Console.ReadLine() ?? "";
 
-            if (userInput.Contains("exit") || userInput.Contains("quit") || userInput.Contains("bye"))
+            if (userInput.ToLower().Contains("exit") ||
+                userInput.ToLower().Contains("quit") ||
+                userInput.ToLower().Contains("bye"))
             {
                 exitChat = true;
                 SimulateTyping("Goodbye! Stay safe online!");
+                continue;
             }
+
+            // Try Part 2 dynamic layer first
+            string dyn = GetDynamicResponse(userInput, userName);
+            if (!string.IsNullOrEmpty(dyn))
+                SimulateTyping(dyn);
             else
-            {
-                string response = GetResponse(userInput);
-                SimulateTyping(response);
-            }
+                // Fallback to original Part 1 logic
+                SimulateTyping(GetResponse(userInput));
         }
     }
 }
-
-
