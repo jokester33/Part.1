@@ -6,6 +6,28 @@ using System.Media;
 
 class CyberSecurityChatbot
 {
+    // Part 2: delegate for topic handlers
+    delegate string TopicHandler(string input);
+
+    // Part 2: generic collection of tips per keyword
+    static readonly Dictionary<string, List<string>> topicTips = new Dictionary<string, List<string>>()
+    {
+        { "phishing", new List<string> {
+            "Be cautious of unsolicited emails or links asking for personal information.",
+            "Verify the sender's address and look for spelling mistakes or urgent language.",
+            "If something feels off, contact the organisation directly rather than using embedded links."
+        }},
+        { "password", new List<string> {
+            "Use a mix of uppercase, lowercase, numbers, and symbols in your passwords.",
+            "Never reuse the same password across multiple accounts.",
+            "Consider using a reputable password manager to keep track of your credentials."
+        }},
+        { "privacy", new List<string> {
+            "Review and limit app permissions on your devices.",
+            "Keep your social media profiles private and think twice before sharing personal info.",
+            "Enable multi-factor authentication wherever possible."
+        }}
+    };
     // Function to play greeting audio 
     static void PlayGreetingAudio()
     {
