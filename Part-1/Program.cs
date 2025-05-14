@@ -42,6 +42,18 @@ class CyberSecurityChatbot
             Console.WriteLine("Audio file could not be played: " + e.Message);
         }
     }
+    // Part 2: map keywords → handler methods
+    static readonly Dictionary<string, TopicHandler> handlers = new Dictionary<string, TopicHandler>()
+    {
+        { "phishing", HandlePhishing },
+        { "password", HandlePassword },
+        { "privacy",  HandlePrivacy  }
+    };
+
+    // Part 2: state & memory
+    static string currentTopic = null;
+    static string favoriteTopic = "";
+    static readonly Random rnd = new Random();
 
     // UI functionality (function to simulate typing effect)
     static void SimulateTyping(string message)
