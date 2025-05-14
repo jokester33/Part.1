@@ -55,6 +55,39 @@ class CyberSecurityChatbot
     static string favoriteTopic = "";
     static readonly Random rnd = new Random();
 
+    // Part 2: sentiment detection
+    static string DetectSentiment(string input)
+    {
+        if (input.Contains("worried") || input.Contains("scared") || input.Contains("anxious"))
+            return "worried";
+        if (input.Contains("curious") || input.Contains("interested"))
+            return "curious";
+        if (input.Contains("frustrated") || input.Contains("angry"))
+            return "frustrated";
+        return "neutral";
+    }
+
+    static string GetSentimentPrefix(string sentiment)
+    {
+        return sentiment switch
+        {
+            "worried" => "It's completely understandable to feel that way. ",
+            "curious" => "I'm glad you're curious! ",
+            "frustrated" => "I hear you—it can be overwhelming. ",
+            _ => ""
+        };
+    }
+
+    static bool IsMostlyNumbers(string s)
+    {
+        var stripped = s.Replace(" ", "");
+        int digits = 0;
+        foreach (var c in stripped) if (char.IsDigit(c)) digits++;
+        return stripped.Length > 0 && (double)digits / stripped.Length > 0.6;
+    }
+
+
+
     // UI functionality (function to simulate typing effect)
     static void SimulateTyping(string message)
     {
